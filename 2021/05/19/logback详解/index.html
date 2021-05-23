@@ -20,31 +20,38 @@
     var CONFIG = {"hostname":"817coder.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"2VH9UATRP5","indexName":"blognew","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="知识沉淀、笔记、随笔">
-<meta property="og:type" content="website">
-<meta property="og:title" content="王俊杰博客">
-<meta property="og:url" content="https://817coder.github.io/index.html">
+  <meta name="description" content="前言项目生产过程中依赖日志记录程序的运行轨迹和重要信息，方便查找关键信息和快速定位解决问题，java和Spring提供了完备的日志支持，方便实现日志的各种需求。 日志常见的框架包括slf4j、commons-logging、Java.util.logging、log4j、logback、log4j2，可以将上述的日志框架分为两种：  日志门面（定义一套接口规范）：slf4j、commons-log">
+<meta property="og:type" content="article">
+<meta property="og:title" content="logback详解">
+<meta property="og:url" content="https://817coder.github.io/2021/05/19/logback%E8%AF%A6%E8%A7%A3/index.html">
 <meta property="og:site_name" content="王俊杰博客">
-<meta property="og:description" content="知识沉淀、笔记、随笔">
+<meta property="og:description" content="前言项目生产过程中依赖日志记录程序的运行轨迹和重要信息，方便查找关键信息和快速定位解决问题，java和Spring提供了完备的日志支持，方便实现日志的各种需求。 日志常见的框架包括slf4j、commons-logging、Java.util.logging、log4j、logback、log4j2，可以将上述的日志框架分为两种：  日志门面（定义一套接口规范）：slf4j、commons-log">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/wangjj0817/image_host/raw/master/images/image-20210521181249053.png">
+<meta property="og:image" content="https://gitee.com/wangjj0817/image_host/raw/master/images/image-20210523111141479.png">
+<meta property="og:image" content="https://gitee.com/wangjj0817/image_host/raw/master/images/image-20210523123602033.png">
+<meta property="article:published_time" content="2021-05-19T02:57:42.000Z">
+<meta property="article:modified_time" content="2021-05-23T07:34:44.691Z">
 <meta property="article:author" content="王俊杰">
 <meta property="article:tag" content="java">
+<meta property="article:tag" content="日志">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/wangjj0817/image_host/raw/master/images/image-20210521181249053.png">
 
-<link rel="canonical" href="https://817coder.github.io/">
+<link rel="canonical" href="https://817coder.github.io/2021/05/19/logback%E8%AF%A6%E8%A7%A3/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>王俊杰博客</title>
+  <title>logback详解 | 王俊杰博客</title>
   
 
 
@@ -183,9 +190,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -201,10 +209,9 @@
       <meta itemprop="name" content="王俊杰博客">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/05/19/logback%E8%AF%A6%E8%A7%A3/" class="post-title-link" itemprop="url">logback详解</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          logback详解
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -247,7 +254,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目生产过程中依赖日志记录程序的运行轨迹和重要信息，方便查找关键信息和快速定位解决问题，java和Spring提供了完备的日志支持，方便实现日志的各种需求。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>项目生产过程中依赖日志记录程序的运行轨迹和重要信息，方便查找关键信息和快速定位解决问题，java和Spring提供了完备的日志支持，方便实现日志的各种需求。</p>
 <p>日志常见的框架包括slf4j、commons-logging、Java.util.logging、log4j、logback、log4j2，可以将上述的日志框架分为两种：</p>
 <ul>
 <li>日志门面（定义一套接口规范）：slf4j、commons-logging</li>
@@ -360,97 +367,34 @@
 
 <p>@Slf4j注解说明：@Slf4j有一个可选的topic参数，如果指定了参数的值，则获取已经存在的logger，如果不指定，则创建类的权限定名的logger。</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/%E6%97%A5%E5%BF%97/" rel="tag"># 日志</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://817coder.github.io/2021/04/09/hexo%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/w.jpeg">
-      <meta itemprop="name" content="王俊杰">
-      <meta itemprop="description" content="知识沉淀、笔记、随笔">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="王俊杰博客">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/09/hexo%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" class="post-title-link" itemprop="url">hexo使用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-04-09 15:11:18" itemprop="dateCreated datePublished" datetime="2021-04-09T15:11:18+08:00">2021-04-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-13 20:18:13" itemprop="dateModified" datetime="2021-05-13T20:18:13+08:00">2021-05-13</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id=""><a href="#" class="headerlink" title=""></a></h2><p>hexo文档：<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">https://hexo.io/zh-cn/docs/</a></p>
-<p>NexT主题文档：<a target="_blank" rel="noopener" href="http://theme-next.iissnan.com/getting-started.html">http://theme-next.iissnan.com/getting-started.html</a></p>
-<p><img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Ffile02.16sucai.com%2Fd%2Ffile%2F2015%2F0107%2F1daf01ab3e6dc38c15efa15c4a6f7a40.jpg&refer=http%3A%2F%2Ffile02.16sucai.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1620553213&t=14bbee80c3ff7eb74fc5fc60e2c21dff" alt="image"></p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/09/hexo%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" rel="prev" title="hexo使用">
+      <i class="fa fa-chevron-left"></i> hexo使用
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -503,6 +447,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#logback%E7%AE%80%E4%BB%8B"><span class="nav-text">logback简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-SpringBoot%E9%9B%86%E6%88%90logback-gt-maven%E4%BE%9D%E8%B5%96"><span class="nav-text">1. SpringBoot集成logback &#x3D;&gt; maven依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-SpringBoot%E9%9B%86%E6%88%90logback-gt-%E9%85%8D%E7%BD%AE"><span class="nav-text">2. SpringBoot集成logback &#x3D;&gt; 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AE"><span class="nav-text">2.1 简单配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E8%AF%A6%E7%BB%86%E9%85%8D%E7%BD%AE"><span class="nav-text">2.2 详细配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-logback-spring-xml%E8%AF%A6%E8%A7%A3"><span class="nav-text">3. logback-spring.xml详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-lt-configuration-gt-%E6%A0%87%E7%AD%BE"><span class="nav-text">3.1 &lt;configuration&gt;标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-lt-root-gt-%E6%A0%87%E7%AD%BE"><span class="nav-text">3.2 &lt;root&gt;标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-lt-logger-gt-%E6%A0%87%E7%AD%BE"><span class="nav-text">3.3 &lt;logger&gt;标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-lt-appender-gt-%E5%85%83%E7%B4%A0"><span class="nav-text">3.4 &lt;appender&gt;元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-lt-encoder-gt-%E5%85%83%E7%B4%A0"><span class="nav-text">3.5 &lt;encoder&gt;元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-lt-filter-gt-%E5%85%83%E7%B4%A0"><span class="nav-text">3.6 &lt;filter&gt;元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-7-logback-spring-xml%E8%AF%A6%E8%A7%A3"><span class="nav-text">3.7 logback-spring.xml详解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-8-Logger%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">3.8 Logger的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-9-%E4%BD%BF%E7%94%A8Lombok"><span class="nav-text">3.9 使用Lombok</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
